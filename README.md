@@ -1,2 +1,2 @@
 # NeuroEvolution
-A neuroevolution visualised through self driving cars.
+A genetic algorithm visualised through self driving cars.
