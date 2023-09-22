@@ -28,6 +28,7 @@ class Track:
 
 
     def draw(self, surface, x, y):
+
         surface.blit(self.image, (x, y))
         
 

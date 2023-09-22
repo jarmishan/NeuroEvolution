@@ -75,7 +75,7 @@ while True:
         track = Track(paint.canvas)
 
         population = Population(
-            250, 
+            350, 
             track,  
             paint.car_position, 
             paint.car_angle*math.pi/180

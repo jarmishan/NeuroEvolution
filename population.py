@@ -6,6 +6,7 @@ import pygame as _pygame
 from neuralnetwork import NeuroEvoloution, Dense
 
 
+
 class Car:
     def __init__(self, track, start_position, start_angle):
         self.image = _pygame.image.load("NeuroEvoloution/assets/car.png").convert_alpha()
