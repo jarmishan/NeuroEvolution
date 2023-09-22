@@ -69,7 +69,7 @@ class DrawingEnvironment:
         eye_dropper = ToggleButton(
             spritesheet.load_sprite("eyedropper_up.png"),
             spritesheet.load_sprite("eyedropper_down.png"),
-            670, 1
+            670,
         )
 
         paint_bucket = ToggleButton(
@@ -407,7 +407,7 @@ class DrawingEnvironment:
 
     def update_text_boxes(self, event):
         for text_box in self.text_boxes:
-            text_box.hande_event(event)
+            text_box.handle_event(event)
 
         self.colour = tuple(int(text_box.text) if text_box.text else 0 for text_box in self.text_boxes)
 
