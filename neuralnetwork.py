@@ -28,7 +28,7 @@ class Dense:
 
     def forward_pass(self, inputs: _numpy.ndarray) -> None:
         """
-        Preforms forward propgation.
+        Preforms forward propagation.
 
         Args:
             inputs (numpy.ndarray): the input to this layer.
@@ -107,7 +107,7 @@ class NeuralNetwork:
 
         return output
 
-    def _back_propagate(self, output, answer, learning_rate) -> _numpy.ndarray:
+    def _back_propagation(self, output, answer, learning_rate) -> _numpy.ndarray:
         """
         Backpropagates the error through the network.
 
@@ -117,7 +117,7 @@ class NeuralNetwork:
             learning_rate (float): The amount the model should change in response to the error.. Defaults to 0.1.
         """
 
-        gradient = self.mean_squared_error_derivative(answer, output)
+        gradient = self._mean_squared_error_derivative(answer, output)
 
         for layer in reversed(self.network):
             gradient = layer.backward_pass(gradient, learning_rate)
@@ -139,8 +139,8 @@ class NeuralNetwork:
 
             for inputs, answer in zip(training_inputs, training_anwsers):
 
-                output = self.forward_propogation(inputs)
-                self._back_propogate(output, answer, learning_rate)
+                output = self.forward_propagation(inputs)
+                self._back_propagation(output, answer, learning_rate)
 
             if display:
                 print(f"{epoch + 1} / {epochs}")
@@ -159,7 +159,7 @@ class NeuroEvoloution(NeuralNetwork):
             amount (float): The mutation amount.
 
         Returns:
-            numpy.ndarray: The mutated matrixes
+            numpy.ndarray: The mutated matrixes.
         """
 
         mutation_factor = _numpy.random.rand(*matrix.shape) * 2 - 1
