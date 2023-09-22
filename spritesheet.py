@@ -2,7 +2,7 @@ import pygame as _pygame
 
 import json as _json
 
-class Spritesheet:  
+class Spritesheet:
     def __init__(self, filename) -> None:
         self.filename = filename
         self.sprite_sheet = _pygame.image.load(filename).convert()
@@ -15,8 +15,8 @@ class Spritesheet:
         sprite.set_colorkey(colourkey)
         sprite.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
         return sprite
-    
+
     def load_sprite(self, name, colourkey=(0, 0, 0)) -> _pygame.Surface:
         sprite = self.image_data["frames"][name]["frame"]
-        
+
         return self._get_sprite(sprite["x"], sprite["y"], sprite["w"], sprite["h"], colourkey)

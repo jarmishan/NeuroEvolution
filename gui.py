@@ -48,7 +48,7 @@ class Graph:
         for i, point in enumerate(points):
             x, y = i * self.increment, self.size - point
             line_points.append((x, y))
-        
+
             if show_points:
                 _pygame.draw.circle(self.graph, (0, 0, 0), (x, y), 5)
 
@@ -58,7 +58,7 @@ class Graph:
     def draw(self, surface, x, y):
         surface.blit(self.graph, (x, y))
 
-        
+
 class Button(_UIElement):
     def __init__(self, button_up_image: _pygame.Surface, button_down_image: _pygame.Surface, x: int, y: int):
         self.button_up_image = button_up_image
@@ -72,7 +72,7 @@ class Button(_UIElement):
         if _pygame.mouse.get_pressed(5)[mouse_button] and self.rect.collidepoint(x, y):
             self.current_image = self.button_down_image
             return True
-        
+
         self.current_image = self.button_up_image
         return False
 
@@ -80,12 +80,12 @@ class Button(_UIElement):
     def draw(self, surface):
         _pygame.draw.rect(surface, (255, 255, 255), self.rect)
         surface.blit(self.current_image, (self.x, self.y))
-        
+
 
     def reset(self):
         self.__init__(self.button_up_image, self.button_down_image, self.x, self.y)
-       
- 
+
+
 class ToggleButton(Button):
     def __init__(self, button_up_image: _pygame.Surface, button_down_image: _pygame.Surface, x: int, y: int):
         super().__init__(button_up_image, button_down_image, x, y)
@@ -95,10 +95,10 @@ class ToggleButton(Button):
         if _pygame.mouse.get_pressed(5)[mouse_button] and self.rect.collidepoint(x, y):
             self.current_image = self.button_up_image if self.pressed else self.button_down_image
             self.pressed = not self.pressed
-        
+
         return self.pressed
-    
-  
+
+
 class Slider(_UIElement):
     def __init__(self, slider_image, bar_image, x, y, direction="horizontal"):
         self.slider_image = slider_image
@@ -122,40 +122,40 @@ class Slider(_UIElement):
 
             self.slider_y = self.MINIMUM
             self.slider_x = self.x
-        
+
         self.previous_distance = 0
 
 
     def move(self, x, y, mouse_button=0):
         if self.rect.collidepoint(x, y) and _pygame.mouse.get_pressed(5)[mouse_button]:
-            x -= self.slider_image.get_width() / 2 
+            x -= self.slider_image.get_width() / 2
             y -= self.slider_image.get_height() / 2
-            
+
             if self.direction == "horizontal":
                 if self.MINIMUM < x and x < self.MAXIMUM:
                     self.slider_x = x
-                
+
             elif self.MINIMUM < y and y < self.MAXIMUM:
                     self.slider_y = y
 
     def get_distance(self):
         if self.direction == "horizontal":
             self.previous_distance = (self.slider_x - self.x) / self.WIDTH
-            
+
         else:
             self.previous_distance = (self.slider_y - self.y) / self.HEIGHT
 
-        return self.previous_distance 
+        return self.previous_distance
 
 
     def get_rel(self, x, y, mouse_button=0):
-        if self.rect.collidepoint(x, y) and _pygame.mouse.get_pressed(5)[mouse_button]: 
+        if self.rect.collidepoint(x, y) and _pygame.mouse.get_pressed(5)[mouse_button]:
             if self.direction == "horizontal" and self.MINIMUM < x and x < self.MAXIMUM:
                 return _pygame.mouse.get_rel()[1]
-            
+
             elif self.MINIMUM < y and y < self.MAXIMUM:
                 return _pygame.mouse.get_rel()[1]
-            
+
         return 0.0
 
 
@@ -171,23 +171,22 @@ class Slider(_UIElement):
 
 class TextInputArea(_UIElement):
     def __init__(self, image, font, x, y, bourder_size=0):
-        "this is a doc stroig"
         self.font = font
         self.image = image
-                 
+
         super().__init__(*self.image.get_size(), x, y)
 
         self.bourder_size = bourder_size
 
         self.border_x = [
-            self.x + bourder_size, 
+            self.x + bourder_size,
             self.x + self.HEIGHT - bourder_size
         ]
 
 
         self.border_y = [
-            self.y + bourder_size, 
-            self.y + self.WIDTH - bourder_size          
+            self.y + bourder_size,
+            self.y + self.WIDTH - bourder_size
         ]
 
         self.text = "0"
@@ -198,7 +197,7 @@ class TextInputArea(_UIElement):
     def get_selected(self, x, y):
         if _pygame.mouse.get_pressed(5)[0]:
             if self.rect.collidepoint(x, y):
-                
+
                 self.is_selected = True
 
             else:
@@ -206,43 +205,38 @@ class TextInputArea(_UIElement):
 
         return self.is_selected
 
-        
-    def hande_event(self, event):
+
+    def handle_event(self, event):
         if self.is_selected:
             if event.key == _pygame.K_BACKSPACE:
                 self.text = self.text[:-1]
-                
 
             else:
                 self.text += event.unicode
                 if self.font.render(self.text, True, (255, 0, 0)).get_width() > self.image.get_width() - self.bourder_size:
                     self.text = self.text[:-1]
 
-
             self.text = self.filter_num(self.text, 255)
 
-            
             return self.text
-        
 
     def filter_num(self, text, max):
         if text.isdigit():
             if int(text) > max:
                 return str(int(text[:-1]))
-            
+
             return str(int(text))
-  
+
         text = ''.join(i for i in text if i.isdigit())
 
         return text if text else "0"
 
 
-        
+
     def draw(self, surface, colour):
         text_surface = self.font.render(self.text, True, colour)
         surface.blit(self.image, (self.x, self.y))
         surface.blit(text_surface, (self.border_x[0], self.y))
-    
 
 class ColourPicker(_UIElement):
     def __init__(self, width, height, x, y):
@@ -271,14 +265,14 @@ class ColourPicker(_UIElement):
             channel_difference = max_channel - min_channel
             saturation = (channel_difference / (2 - max_channel - min_channel)
                         if lightness > 0.5 else channel_difference / (max_channel + min_channel))
-            
+
             if max_channel == red:
                 hue = (green - blue) / channel_difference + (6 if green < blue else 0)
             elif max_channel == green:
                 hue = (blue - red) / channel_difference + 2
             else:
                 hue = (red - green) / channel_difference + 4
-            
+
             hue /= 6
 
         return hue, saturation, lightness
@@ -316,7 +310,7 @@ class ColourPicker(_UIElement):
         new_saturation = max(0, saturation - amount)
         new_rgb = self._hsl_to_rgb(hue, new_saturation, lightness)
         return new_rgb
-    
+
     def create(self, start_colour):
         start_colour = tuple(start_colour)
         for i in range(self.WIDTH):
@@ -330,7 +324,7 @@ class ColourPicker(_UIElement):
     def update(self, offset=0):
         if offset:
             colour_index = self.current_rgb_num % 3
-            
+
             self.current_rgb[colour_index] += (offset if self.increase else -offset)
             current_colour = self.current_rgb[colour_index]
 
@@ -350,7 +344,7 @@ class ColourPicker(_UIElement):
 
                 self.update(next_offset)
 
-        self.create(self.current_rgb)   
+        self.create(self.current_rgb)
 
 
     def reset(self):
@@ -358,7 +352,7 @@ class ColourPicker(_UIElement):
         self.current_rgb_num = 1
         self.increase = True
 
-    
+
     def is_in_bounds(self, x, y):
         return x > 0 + self.x and x < self.WIDTH + self.x and y > 0 + self.y and y < self.HEIGHT + self.y
 
@@ -369,5 +363,4 @@ class ColourPicker(_UIElement):
             return colour
 
     def draw(self, surface):
-        
         surface.blit(self.surface, (self.x, self.y))

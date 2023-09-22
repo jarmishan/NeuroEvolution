@@ -6,10 +6,9 @@ import pygame as _pygame
 from neuralnetwork import NeuroEvoloution, Dense
 
 
-
 class Car:
     def __init__(self, track, start_position, start_angle):
-        self.image = _pygame.image.load("NeuroEvoloution/assets/car.png").convert_alpha()
+        self.image = _pygame.image.load("assets/car.png").convert_alpha()
         self.rotated_image = self.image
         self.track = track
 
@@ -22,7 +21,7 @@ class Car:
         self.MAX_VELOCITY = 12
         self.ACCELERATION = 0.3
         self.FRICTION = 0.2
-        
+
         self.DIRECTIONS = 32
         self.STEP_ANGLE = 360 / self.DIRECTIONS * _math.pi / 180
         self.MAX_DEPTH = 500
@@ -34,7 +33,7 @@ class Car:
             Dense(12, 8, "tanh"),
             Dense(8, 5, "tanh"),
         )
-        
+
         self.fitness = 0
         self.num_frames = 0
 
@@ -42,11 +41,11 @@ class Car:
     def has_collided(self):
         car_mask = _pygame.mask.from_surface(self.rotated_image)
         return car_mask.overlap(self.track.mask, (-self.x, -self.y)) or self.x < 0 or self.x > self.track.WIDTH or self.y < 0 or self.y > self.track.HEIGHT
-    
+
     @property
     def in_bounds(self):
         return 0 < self.x < self.track.WIDTH and 150 < self.y < self.track.HEIGHT
-    
+
     def update_fitness(self):
         self.fitness += _math.sqrt((self.prev_x - self.x) ** 2 + (self.prev_y - self.y) ** 2)
 
@@ -56,7 +55,7 @@ class Car:
 
     def convert(self, inputs):
         return _numpy.array([inputs[i][0] for i in range(2)]),  _numpy.array([inputs[i+2][0] for i in range(3)])
-    
+
 
     def get_state(self):
         inputs = _numpy.zeros(self.DIRECTIONS)
@@ -85,8 +84,8 @@ class Car:
             start_angle += self.STEP_ANGLE
 
         return _numpy.reshape(inputs, (self.DIRECTIONS, 1))
-    
-    
+
+
     def ai_move(self):
         actions = [
             ["forward", "backward"],
@@ -107,10 +106,10 @@ class Car:
 
         if direction == "left":
             self.angle -= delta_angle
-            
+
         elif direction == "right":
             self.angle += delta_angle
-        
+
 
     def move(self, directions, dt):
         self.prev_x = self.x
@@ -119,8 +118,8 @@ class Car:
             self.velocity = self.velocity // abs(self.velocity) * self.MAX_VELOCITY
 
         elif directions[0] == "forward":
-            self.velocity -= self.ACCELERATION 
-            
+            self.velocity -= self.ACCELERATION
+
         elif directions[0] == "back":
             self.velocity += self.ACCELERATION
             self.fitness -= 100
@@ -134,8 +133,8 @@ class Car:
 
         self.x += _math.sin(self.angle) * self.velocity * dt
         self.y += _math.cos(self.angle) * self.velocity * dt
-        
-        
+
+
     def draw(self,surface):
         angle = self.angle * 180 / _math.pi
         self.rotated_image = _pygame.transform.rotate(self.image, angle)
@@ -152,6 +151,7 @@ class Car:
         self.num_frames += self.get_stationary_frames()
 
 
+
 class Population:
     def __init__(self, population_size, track, start_position, start_angle=3*_math.pi/2):
         self.population_size = population_size
@@ -163,11 +163,11 @@ class Population:
         self.best_fitness = -float('inf')
         self.best_current_fitness = -float('inf')
         self.history = []
-        
+
 
     def load_cars(self):
         for car_index, car in enumerate(self.cars):
-            car.brain.load("NeuroEvoloution/models/model")
+            car.brain.load("models/model")
             if car_index != 0:
                 car.brain.mutate(0.3)
 
@@ -176,14 +176,14 @@ class Population:
         self.generation += 1
         self.cars = [Car(*self.car_data) for _ in range(self.population_size-1)]
         self.best_current_fitness = -float('inf')
-    
+
         self.load_cars()
         self.cars.append(Car(*self.car_data))
 
 
     def update_best_genotype(self, car):
         self.best_fitness = car.fitness
-        car.brain.save("NeuroEvoloution/models/model")
+        car.brain.save("models/model")
 
 
     def train(self, surface, dt):

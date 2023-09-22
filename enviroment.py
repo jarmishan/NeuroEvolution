@@ -20,7 +20,7 @@ class Track:
         self.image = self.image.convert_alpha()
 
         self.mask = pygame.mask.from_surface(self.image)
-    
+
     @classmethod
     def from_path(cls, path):
         track = pygame.image.load(path)
@@ -30,11 +30,11 @@ class Track:
     def draw(self, surface, x, y):
 
         surface.blit(self.image, (x, y))
-        
+
 
 class DrawingEnvironment:
     def __init__(self, window_width, window_height):
-        spritesheet = Spritesheet("NeuroEvoloution/assets/spritesheet.png")
+        spritesheet = Spritesheet("assets/spritesheet.png")
         self.BORDER_SIZE = 150
         self.pen_size = 10
 
@@ -47,7 +47,7 @@ class DrawingEnvironment:
             spritesheet.load_sprite("rectangle_down.png"),
             330, 1
         )
-        
+
         circle_button = ToggleButton(
             spritesheet.load_sprite("circle_up.png"),
             spritesheet.load_sprite("circle_down.png"),
@@ -59,13 +59,13 @@ class DrawingEnvironment:
             spritesheet.load_sprite("ellipses_down.png"),
             500, 1
         )
-        
+
         rubber_button = ToggleButton(
             spritesheet.load_sprite("rubber_up.png"),
             spritesheet.load_sprite("rubber_down.png"),
             585, 1
         )
-        
+
         eye_dropper = ToggleButton(
             spritesheet.load_sprite("eyedropper_up.png"),
             spritesheet.load_sprite("eyedropper_down.png"),
@@ -97,14 +97,14 @@ class DrawingEnvironment:
         )
 
         load = Button(
-            pygame.image.load("neuroevoloution/assets/load_button_up.png").convert_alpha(),
-            pygame.image.load("neuroevoloution/assets/load_button_down.png").convert_alpha(),
+            pygame.image.load("assets/load_button_up.png").convert_alpha(),
+            pygame.image.load("assets/load_button_down.png").convert_alpha(),
             1095, 1
         )
 
         car = ToggleButton(
-            pygame.image.load("neuroevoloution/assets/car_button_up.png").convert_alpha(),
-            pygame.image.load("neuroevoloution/assets/car_button_down.png").convert_alpha(),
+            pygame.image.load("assets/car_button_up.png").convert_alpha(),
+            pygame.image.load("assets/car_button_down.png").convert_alpha(),
             1180, 1
         )
 
@@ -126,7 +126,7 @@ class DrawingEnvironment:
         }
 
         self.tools = {
-            "pen": self.line, 
+            "pen": self.line,
             "rectangle": self.rectangle,
             "circle": self.circle,
             "ellipse": self.ellipse,
@@ -138,12 +138,12 @@ class DrawingEnvironment:
 
         self.text_boxes = [
             TextInputArea(
-                spritesheet.load_sprite("textbox.png"), 
-                pygame.font.Font("NeuroEvoloution/assets/pixel_font.ttf", 60), 
-                215, 1+i*49, 
+                spritesheet.load_sprite("textbox.png"),
+                pygame.font.Font("assets/pixel_font.ttf", 60),
+                215, 1+i*49,
                 bourder_size=10
-            ) 
-            for i in range(3)                  
+            )
+            for i in range(3)
         ]
 
 
@@ -166,16 +166,16 @@ class DrawingEnvironment:
         self.start_position = None
 
         self.shape = pygame.Surface((0, 0))
-        self.shape.fill((255, 255, 255)) 
+        self.shape.fill((255, 255, 255))
         self.pos = 0, 0
         self.pressed = False
         self.saved = False
 
         self.car_position = None
         self.car_angle = 270
-        self.car_image = pygame.transform.rotate(pygame.image.load("NeuroEvoloution/assets/car.png").convert_alpha(), self.car_angle)
-        
-        self.tracks = len(os.listdir("NeuroEvoloution/tracks"))
+        self.car_image = pygame.transform.rotate(pygame.image.load("assets/car.png").convert_alpha(), self.car_angle)
+
+        self.tracks = len(os.listdir("tracks"))
         self.editing_track = None
         self.current_track = 0
 
@@ -267,13 +267,13 @@ class DrawingEnvironment:
         else:
             pygame.draw.circle(self.canvas, (255, 255, 255), self.pen_position, self.pen_size // 2)  
 
-        return self.shape, self.pos      
+        return self.shape, self.pos
 
 
     def circle(self, surface):
         if not self.start_position:
             self.start_position = self.pen_position
-        
+
         x, y = self.start_position
         dx, dy = x - self.pen_position[0], y - self.pen_position[1]
 
@@ -297,7 +297,7 @@ class DrawingEnvironment:
         surface.blit(circle, (x, y + self.BORDER_SIZE))
 
         return circle, (x, y)
-        
+
 
     def ellipse(self, surface):
         if not self.start_position:
@@ -319,14 +319,13 @@ class DrawingEnvironment:
         ellipse = pygame.Surface((width, height))
         ellipse.fill(temp_colour)
         ellipse.set_colorkey(temp_colour)
-        
         pygame.draw.ellipse(ellipse, self.colour, (0, 0, width, height), width=self.pen_size)
 
         surface.blit(ellipse, (x, y + self.BORDER_SIZE))
 
         return ellipse, (x, y)
 
-        
+
     def eye_dropper(self, _):
         try:
             self.colour = tuple(list(self.canvas.get_at(self.pen_position))[:3])
@@ -338,7 +337,7 @@ class DrawingEnvironment:
             pass
 
         return self.shape, self.pos
-        
+
 
     def paint_bucket(self, _):
         arr = pygame.surfarray.array3d(self.canvas)
@@ -348,7 +347,7 @@ class DrawingEnvironment:
         pygame.surfarray.blit_array(self.canvas, arr)
 
         return self.shape, self.pos
-    
+
 
     def car(self, _):
         self.car_position = self.mouse_x, self.mouse_y
@@ -366,7 +365,7 @@ class DrawingEnvironment:
 
     def update_toggle_buttons(self):
         self.draw_type = "pen"
- 
+
         for button_type in self.toggle_buttons:
             if self.toggle_buttons[button_type].get_pressed(self.mouse_x, self.mouse_y):
                 self.draw_type = button_type
@@ -386,25 +385,26 @@ class DrawingEnvironment:
 
         elif self.buttons["save"].get_pressed(self.mouse_x, self.mouse_y) and self.car_position:
             if not self.editing_track:
-                pygame.image.save(self.canvas, f"NeuroEvoloution/tracks/track{self.tracks}.png")
-                
+                pygame.image.save(self.canvas, f"tracks/track{self.tracks}.png")
+
             else:
                 pygame.image.save(self.canvas, self.editing_track)
             self.saved = True
 
-                
+
+
         elif self.buttons["load"].get_pressed(self.mouse_x, self.mouse_y) and self.tracks:
             try:
-                self.editing_track = f"NeuroEvoloution/tracks/track{self.current_track % self.tracks}.png"
+                self.editing_track = f"tracks/track{self.current_track % self.tracks}.png"
                 self.canvas = pygame.transform.scale(pygame.image.load(self.editing_track), self.canvas.get_size())
                 self.current_track += 1
                 pygame.time.delay(100)
-            
-                
-            except FileNotFoundError: 
-                print(f"NeuroEvoloution/tracks/track{self.current_track % self.tracks}.png")
-                
-                
+
+
+            except FileNotFoundError:
+                print(f"tracks/track{self.current_track % self.tracks}.png")
+
+
     def update_text_boxes(self, event):
         for text_box in self.text_boxes:
             text_box.hande_event(event)
@@ -424,7 +424,7 @@ class DrawingEnvironment:
                 self.car_angle -= 10
 
 
-            self.car_image = pygame.transform.rotate(pygame.image.load("NeuroEvoloution/assets/car.png"), self.car_angle).convert_alpha()
+            self.car_image = pygame.transform.rotate(pygame.image.load("assets/car.png"), self.car_angle).convert_alpha()
 
 
     def update_canvas(self, surface):
@@ -439,12 +439,11 @@ class DrawingEnvironment:
 
             else:
                 surface.blit(self.shape, (self.pos[0], self.pos[1] + self.BORDER_SIZE))
-                
-            self.previous_position = self.pen_position
 
+            self.previous_position = self.pen_position
             self.pressed = True
 
-       
+
         else:
             if self.pressed:
                 self.canvas.blit(self.shape, self.pos)
