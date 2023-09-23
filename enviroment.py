@@ -69,7 +69,7 @@ class DrawingEnvironment:
         eye_dropper = ToggleButton(
             spritesheet.load_sprite("eyedropper_up.png"),
             spritesheet.load_sprite("eyedropper_down.png"),
-            670,
+            670, 1
         )
 
         paint_bucket = ToggleButton(
