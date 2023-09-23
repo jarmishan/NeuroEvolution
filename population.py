@@ -93,7 +93,7 @@ class Car:
         ]
 
         inputs = self.get_state()
-        outputs = self.convert(self.brain.forward_propogation(inputs))
+        outputs = self.convert(self.brain.forward_propagation(inputs))
 
         return [
             actions[0][outputs[0].argmax()],
