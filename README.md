@@ -1,2 +1,2 @@
 # NeuroEvolution
-A genetic algorithm visualised through self driving cars.
+A Python application that visualises a genetic algorithm through self driving cars.
